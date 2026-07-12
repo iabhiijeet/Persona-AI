@@ -1,25 +1,27 @@
 
-import {hiteshPrompt, piyushPrompt} from "./data.js";
-import {askLLM} from "./llmservice.js";
+import { hiteshPrompt, piyushPrompt } from "./data.js";
+import { askLLM } from "./llmservice.js";
 
-export async function handleLLM(req,res){
-  const {persona, message} = req.body;
+export async function handleLLM(req, res) {
+  const { persona, message } = req.body;
 
-  let prompt;
-  switch(persona){
+  let systemPrompt;
+  switch (persona) {
     case "hitesh":
-      prompt = hiteshPrompt;
+      systemPrompt = hiteshPrompt;
       break;
     case "piyush":
-      prompt = piyushPrompt;
+      systemPrompt = piyushPrompt;
       break;
     default:
-      prompt = hiteshPrompt;
+      systemPrompt = hiteshPrompt;
   }
 
-  const answer = await askLLM({prompt,message});
-
-  return answer;
-
-
+  try {
+    const answer = await askLLM({ systemPrompt, message });
+    res.json({ reply: answer });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 }

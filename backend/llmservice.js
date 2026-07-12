@@ -2,8 +2,8 @@ import Groq from "groq-sdk";
 import dotenv from "dotenv";
 dotenv.config();
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const memoy=[];
 
+const memory = [];
 
 export async function askLLM({ systemPrompt, message }) {
   if (memory.length === 0) {
@@ -16,11 +16,6 @@ export async function askLLM({ systemPrompt, message }) {
   memory.push({
     role: "user",
     content: message,
-  });
-
-  const response = await groq.chat.completions.create({
-    model: "openai/gpt-oss-20b",
-    messages: memory,
   });
 
   try {
@@ -36,7 +31,7 @@ export async function askLLM({ systemPrompt, message }) {
     });
     return reply;
   } catch (error) {
-    console.log(error);
-    process.exit(1);
+    console.error(error);
+    throw error;
   }
 }
