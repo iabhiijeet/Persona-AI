@@ -22,6 +22,7 @@ export async function askLLM({ persona, systemPrompt, message }) {
   const response = await groq.chat.completions.create({
     messages: memory,
     model: "openai/gpt-oss-20b",
+    max_tokens: 500,
   });
 
   const reply = response.choices[0].message.content;

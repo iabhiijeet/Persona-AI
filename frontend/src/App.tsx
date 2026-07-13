@@ -13,7 +13,7 @@ function App() {
         setPersona={setPersona}
       />
 
-      <div className="flex justify-center pt-10">
+      <div className="flex justify-center px-4 pt-4 sm:px-0 sm:pt-10">
         <ChatCard persona={persona} />
       </div>
     </div>

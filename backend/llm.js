@@ -19,7 +19,8 @@ export async function handleLLM(req, res) {
 
   try {
     const answer = await askLLM({ persona, systemPrompt, message });
-    res.json({ reply: answer });
+    const remaining = req.rateLimit?.remaining;
+    res.json({ reply: answer, remaining });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });

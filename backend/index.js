@@ -5,12 +5,13 @@ dotenv.config();
 const PORT = process.env.PORT;
 import { handleLLM } from "./llm.js";
 import { resetMemory } from "./llmservice.js";
+import { rateLimiter } from "./rateLimiter.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/api/chat", handleLLM);
+app.post("/api/chat", rateLimiter, handleLLM);
 
 app.post("/api/reset", (req, res) => {
   const { persona } = req.body;
