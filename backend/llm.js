@@ -18,7 +18,7 @@ export async function handleLLM(req, res) {
   }
 
   try {
-    const answer = await askLLM({ systemPrompt, message });
+    const answer = await askLLM({ persona, systemPrompt, message });
     res.json({ reply: answer });
   } catch (error) {
     console.error(error);

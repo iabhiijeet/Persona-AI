@@ -3,35 +3,29 @@ import dotenv from "dotenv";
 dotenv.config();
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const memory = [];
+const conversations = new Map();
 
-export async function askLLM({ systemPrompt, message }) {
-  if (memory.length === 0) {
-    memory.push({
-      role: "system",
-      content: systemPrompt,
-    });
+export function resetMemory(persona) {
+  conversations.delete(persona);
+}
+
+export async function askLLM({ persona, systemPrompt, message }) {
+  if (!conversations.has(persona)) {
+    conversations.set(persona, [
+      { role: "system", content: systemPrompt },
+    ]);
   }
 
-  memory.push({
-    role: "user",
-    content: message,
+  const memory = conversations.get(persona);
+  memory.push({ role: "user", content: message });
+
+  const response = await groq.chat.completions.create({
+    messages: memory,
+    model: "openai/gpt-oss-20b",
   });
 
-  try {
-    const response = await groq.chat.completions.create({
-      messages: memory,
-      model: "openai/gpt-oss-20b",
-    });
-    const reply = response.choices[0].message.content;
+  const reply = response.choices[0].message.content;
+  memory.push({ role: "assistant", content: reply });
 
-    memory.push({
-      role: "assistant",
-      content: reply,
-    });
-    return reply;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  return reply;
 }
