@@ -14,7 +14,7 @@ function App() {
       />
 
       <div className="flex justify-center px-4 pt-4 sm:px-0 sm:pt-10">
-        <ChatCard persona={persona} />
+        <ChatCard persona={persona} key={persona} />
       </div>
     </div>
   );

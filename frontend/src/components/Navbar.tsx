@@ -1,4 +1,6 @@
-export default function Navbar({ persona, setPersona }: { persona: string, setPersona: (persona: string) => void }) {
+import { type Persona } from "../data/personas";
+
+export default function Navbar({ persona, setPersona }: { persona: Persona, setPersona: (persona: Persona) => void }) {
   return (
     <header className="w-full border-b border-zinc-800 bg-[#111111]">
       <div className="mx-auto flex h-auto min-h-16 flex-col gap-3 px-4 py-3 sm:h-20 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-0">

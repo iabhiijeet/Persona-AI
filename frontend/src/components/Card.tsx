@@ -11,7 +11,7 @@ type ChatCardProps = {
   persona: Persona;
 };
 
-const API_URL = "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export default function ChatCard({ persona }: ChatCardProps) {
   const current = personas[persona];
@@ -25,13 +25,6 @@ export default function ChatCard({ persona }: ChatCardProps) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  useEffect(() => {
-    setMessages([]);
-    setInput("");
-    setLoading(false);
-    setRemaining(null);
-  }, [persona]);
 
   async function handleReset() {
     setMessages([]);
@@ -67,9 +60,17 @@ export default function ChatCard({ persona }: ChatCardProps) {
           { role: "assistant", content: data.error || "Daily limit reached. Try again tomorrow." },
         ]);
         setRemaining(0);
-      } else {
-        setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      } else if (res.ok) {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.reply || "No response received." },
+        ]);
         if (data.remaining !== undefined) setRemaining(data.remaining);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.error || "Something went wrong. Please try again." },
+        ]);
       }
     } catch {
       setMessages((prev) => [
